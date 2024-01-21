@@ -1,0 +1,19 @@
+Start image:
+docker compose -f docker-compose.yml up -d
+
+Go into kafka container:
+docker exec -it kafka /bin/sh
+cd opt
+cd kafka
+
+Create Topic:
+./bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic samplekafkatopic
+
+List topics:
+./bin/kafka-topics.sh --list --zookeeper zookeeper:2181
+
+Create consumer:
+./bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic samplekafkatopic --from-beginning
+
+Stop docker:
+docker compose down
