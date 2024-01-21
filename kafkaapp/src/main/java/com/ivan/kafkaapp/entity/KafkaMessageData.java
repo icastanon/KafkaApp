@@ -47,12 +47,12 @@ public class KafkaMessageData {
 		this.messageDataId = messageDataId;
 	}
 
-	public String getMessage() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setMessage(String message) {
-		this.userId = message;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public int getTemplateId() {

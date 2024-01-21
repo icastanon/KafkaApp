@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ivan.kafkaapp.dto.LatestMessageResponse;
 import com.ivan.kafkaapp.dto.MessagingRequest;
 import com.ivan.kafkaapp.dto.Response;
+import com.ivan.kafkaapp.dto.UserMessageData;
 import com.ivan.kafkaapp.dto.UserMessageDataResponse;
 import com.ivan.kafkaapp.service.KafkaMessagingService;
 
@@ -45,6 +48,30 @@ public class KafkaRestController {
 		try {
 			log.info("Service call /kafka/messagesforuser, User Id: {}", userId);
 			UserMessageDataResponse resp = kafkaService.getMessagesForUser(userId);
+			return Response.successResponse(resp);
+		}catch(Exception e){
+			log.error("Error: " + e.getMessage());
+			return Response.failureResponse(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/messagesfortemplate")
+	public Response<UserMessageDataResponse> getMessagesForTemplate(@RequestParam("templateId") int templateId){
+		try {
+			log.info("Service call /kafka/messagesfortemplate, Template Id: {}", templateId);
+			UserMessageDataResponse resp = kafkaService.getMessagesForTemplate(templateId);
+			return Response.successResponse(resp);
+		}catch(Exception e){
+			log.error("Error: " + e.getMessage());
+			return Response.failureResponse(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/latestmessage")
+	public Response<LatestMessageResponse> getLatestMessage(){
+		try {
+			log.info("Service call /kafka/getlatestmessage");
+			LatestMessageResponse resp = kafkaService.getLatestMessage();
 			return Response.successResponse(resp);
 		}catch(Exception e){
 			log.error("Error: " + e.getMessage());

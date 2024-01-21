@@ -12,4 +12,6 @@ public interface KafkaMessageDataRepository extends JpaRepository<KafkaMessageDa
 	public List<KafkaMessageData> findByTemplateId(Integer templateId);
 	
 	public List<KafkaMessageData> findByUserId(String userId);
+	
+	public KafkaMessageData findTopByOrderByCreatedDateDesc();
 }
