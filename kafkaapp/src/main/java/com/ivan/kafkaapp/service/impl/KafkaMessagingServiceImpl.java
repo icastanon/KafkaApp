@@ -1,5 +1,7 @@
 package com.ivan.kafkaapp.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -9,7 +11,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.ivan.kafkaapp.dto.LatestMessageResponse;
 import com.ivan.kafkaapp.dto.MessagingRequest;
+import com.ivan.kafkaapp.dto.UserMessageData;
+import com.ivan.kafkaapp.dto.UserMessageDataResponse;
 import com.ivan.kafkaapp.entity.KafkaMessageData;
 import com.ivan.kafkaapp.entity.KafkaMessageTemplate;
 import com.ivan.kafkaapp.exception.TemplateNotFoundException;
@@ -62,7 +67,48 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		KafkaMessageData messageDataEntity = new KafkaMessageData(userId, request.getTemplateId());
 		dataRepo.saveAndFlush(messageDataEntity);
 	}
+
+	@Override
+	public UserMessageDataResponse getMessagesForUser(String userId) {
+		//getting messages from db
+		List<KafkaMessageData> messageEntities = dataRepo.findByUserId(userId);
+		List<UserMessageData> messages = new ArrayList<>();
+		
+		//constructing response
+		for(KafkaMessageData data : messageEntities) {
+			UserMessageData messageData = new UserMessageData(data.getTemplateId(), data.getCreatedDate());
+			messages.add(messageData);
+		}
+		
+		UserMessageDataResponse response = new UserMessageDataResponse(messages, messages.size());
+		return response;
+	}
+
+	@Override
+	public UserMessageDataResponse getMessagesForTemplate(int templateId) {
+		//getting messages from db
+		List<KafkaMessageData> messageEntities = dataRepo.findByTemplateId(templateId);
+		List<UserMessageData> messages = new ArrayList<>();
+		
+		//constructing response
+		for(KafkaMessageData data : messageEntities) {
+			UserMessageData messageData = new UserMessageData(data.getTemplateId(), data.getCreatedDate());
+			messages.add(messageData);
+		}
+		
+		UserMessageDataResponse response = new UserMessageDataResponse(messages, messages.size());
+		return response;
+	}
 	
+	@Override
+	public LatestMessageResponse getLatestMessage() {
+		KafkaMessageData latestMessage = dataRepo.findTopByOrderByCreatedDateDesc();
+		
+		LatestMessageResponse response = new LatestMessageResponse(latestMessage.getTemplateId(), latestMessage.getCreatedDate(), latestMessage.getUserId());
+		
+		return response;
+	}
+
 	@PreDestroy
 	public void closeProducer() {
 		kafkaProducer.close();

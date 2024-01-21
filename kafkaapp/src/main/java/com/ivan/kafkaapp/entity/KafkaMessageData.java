@@ -35,6 +35,9 @@ public class KafkaMessageData {
 		this.templateId = templateId;
 		this.createdDate = LocalDateTime.now();
 	}
+	
+	public KafkaMessageData() {	
+	}
 
 	public int getMessageDataId() {
 		return messageDataId;
@@ -44,12 +47,12 @@ public class KafkaMessageData {
 		this.messageDataId = messageDataId;
 	}
 
-	public String getMessage() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setMessage(String message) {
-		this.userId = message;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public int getTemplateId() {
