@@ -35,6 +35,9 @@ public class KafkaMessageData {
 		this.templateId = templateId;
 		this.createdDate = LocalDateTime.now();
 	}
+	
+	public KafkaMessageData() {	
+	}
 
 	public int getMessageDataId() {
 		return messageDataId;
