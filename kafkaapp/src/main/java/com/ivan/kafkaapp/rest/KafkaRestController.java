@@ -1,6 +1,8 @@
 package com.ivan.kafkaapp.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,9 +70,10 @@ public class KafkaRestController {
 	//TODO: add endpoint to create a new template
 	
 	@ExceptionHandler
-	public Response<?> handleException(Exception e){
+	public ResponseEntity<Response<?>> handleException(Exception e){
 		log.error("Error: " + e.getMessage());
-		return Response.failureResponse(e.getMessage());
+		return new ResponseEntity<>(Response.failureResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		
 	}
 	
 }
