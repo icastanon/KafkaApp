@@ -22,15 +22,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 @RequestMapping("/kafkaapi/messages")
-public class KafkaMessagesController {
+public class MessagesController {
 	private KafkaMessagingService kafkaService;
 	
 	@Autowired
-	public KafkaMessagesController(KafkaMessagingService kafkaMessagingService) {
+	public MessagesController(KafkaMessagingService kafkaMessagingService) {
 		kafkaService = kafkaMessagingService;
 	}
 	
-	@PostMapping(value = "/")
+	@PostMapping
 	public Response<?> sendMessage(@RequestHeader("userId") String userId, 
 		@RequestBody MessagingRequest kafkaRequest) throws JsonProcessingException{
 		log.info("Service call /kafka/sendmessage, Request: {}", new ObjectMapper().writer().writeValueAsString(kafkaRequest));
