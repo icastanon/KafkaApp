@@ -18,6 +18,7 @@ import com.ivan.kafkaapp.dto.UserMessageDataResponse;
 import com.ivan.kafkaapp.entity.KafkaMessageData;
 import com.ivan.kafkaapp.entity.KafkaMessageTemplate;
 import com.ivan.kafkaapp.exception.TemplateNotFoundException;
+import com.ivan.kafkaapp.exception.UserNotFoundException;
 import com.ivan.kafkaapp.repository.KafkaMessageDataRepository;
 import com.ivan.kafkaapp.repository.KafkaMessageTemplateRepository;
 import com.ivan.kafkaapp.service.KafkaMessagingService;
@@ -74,6 +75,11 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		List<KafkaMessageData> messageEntities = dataRepo.findByUserId(userId);
 		List<UserMessageData> messages = new ArrayList<>();
 		
+		if(messageEntities.size() <= 0) {
+			log.error("No messages for the user id");
+			throw new UserNotFoundException("The given user has not sent any messages");
+		}
+		
 		//constructing response
 		for(KafkaMessageData data : messageEntities) {
 			UserMessageData messageData = new UserMessageData(data.getTemplateId(), data.getCreatedDate());
@@ -89,6 +95,11 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		//getting messages from db
 		List<KafkaMessageData> messageEntities = dataRepo.findByTemplateId(templateId);
 		List<UserMessageData> messages = new ArrayList<>();
+		
+		if(messageEntities.size() <= 0) {
+			log.error("No messages for the template id");
+			throw new TemplateNotFoundException("No messages have been sent using the given Template Id");
+		}
 		
 		//constructing response
 		for(KafkaMessageData data : messageEntities) {
