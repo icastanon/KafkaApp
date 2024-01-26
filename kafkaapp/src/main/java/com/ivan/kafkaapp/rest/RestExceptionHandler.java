@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j
-public class KafkaRestExceptionHandler {
+public class RestExceptionHandler {
 	@ExceptionHandler
 	public ResponseEntity<Response<?>> handleException(Exception e){
 		log.error("Error: " + e.getMessage());	
