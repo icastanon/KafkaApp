@@ -30,7 +30,7 @@ public class KafkaRestController {
 		kafkaService = kafkaMessagingService;
 	}
 	
-	@PostMapping(value = "/sendmessage")
+	@PostMapping(value = "/messages")
 	public Response<?> sendMessage(@RequestHeader("userId") String userId, 
 		@RequestBody MessagingRequest kafkaRequest) throws JsonProcessingException{
 		log.info("Service call /kafka/sendmessage, Request: {}", new ObjectMapper().writer().writeValueAsString(kafkaRequest));
@@ -53,7 +53,7 @@ public class KafkaRestController {
 		
 	}
 	
-	@GetMapping(value = "/latestmessage")
+	@GetMapping(value = "/messages/latestmessage")
 	public Response<LatestMessageResponse> getLatestMessage(){
 		log.info("Service call /kafka/latestmessage");
 		LatestMessageResponse resp = kafkaService.getLatestMessage();
