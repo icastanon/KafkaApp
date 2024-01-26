@@ -18,13 +18,15 @@ import com.ivan.kafkaapp.dto.LatestMessageResponse;
 import com.ivan.kafkaapp.dto.MessagingRequest;
 import com.ivan.kafkaapp.dto.Response;
 import com.ivan.kafkaapp.dto.UserMessageDataResponse;
+import com.ivan.kafkaapp.exception.TemplateNotFoundException;
+import com.ivan.kafkaapp.exception.UserNotFoundException;
 import com.ivan.kafkaapp.service.KafkaMessagingService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("/kafka")
+@RequestMapping("/kafkaapi")
 public class KafkaRestController {
 	private KafkaMessagingService kafkaService;
 	
@@ -68,12 +70,4 @@ public class KafkaRestController {
 	//TODO: add enpdoint to get all templates
 	
 	//TODO: add endpoint to create a new template
-	
-	@ExceptionHandler
-	public ResponseEntity<Response<?>> handleException(Exception e){
-		log.error("Error: " + e.getMessage());
-		return new ResponseEntity<>(Response.failureResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-		
-	}
-	
 }
