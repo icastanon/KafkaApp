@@ -21,16 +21,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@RequestMapping("/kafkaapi")
-public class KafkaRestController {
+@RequestMapping("/kafkaapi/messages")
+public class KafkaMessagesController {
 	private KafkaMessagingService kafkaService;
 	
 	@Autowired
-	public KafkaRestController(KafkaMessagingService kafkaMessagingService) {
+	public KafkaMessagesController(KafkaMessagingService kafkaMessagingService) {
 		kafkaService = kafkaMessagingService;
 	}
 	
-	@PostMapping(value = "/messages")
+	@PostMapping(value = "/")
 	public Response<?> sendMessage(@RequestHeader("userId") String userId, 
 		@RequestBody MessagingRequest kafkaRequest) throws JsonProcessingException{
 		log.info("Service call /kafka/sendmessage, Request: {}", new ObjectMapper().writer().writeValueAsString(kafkaRequest));
@@ -38,31 +38,10 @@ public class KafkaRestController {
 		return Response.successResponse("Succesfully sent message to kafka topic");
 	}
 	
-	@GetMapping(value = "/users/{userId}/messages")
-	public Response<UserMessageDataResponse> getMessagesForUser(@PathVariable String userId){
-		log.info("Service call /kafka/{}/messages", userId);
-		UserMessageDataResponse resp = kafkaService.getMessagesForUser(userId);
-		return Response.successResponse(resp);
-	}
-	
-	@GetMapping(value = "/templates/{templateId}/messages")
-	public Response<UserMessageDataResponse> getMessagesForTemplate(@PathVariable int templateId){
-		log.info("Service call /kafka/{}/templates", templateId);
-		UserMessageDataResponse resp = kafkaService.getMessagesForTemplate(templateId);
-		return Response.successResponse(resp);
-		
-	}
-	
-	@GetMapping(value = "/messages/latestmessage")
+	@GetMapping(value = "/latestmessage")
 	public Response<LatestMessageResponse> getLatestMessage(){
 		log.info("Service call /kafka/latestmessage");
 		LatestMessageResponse resp = kafkaService.getLatestMessage();
 		return Response.successResponse(resp);
 	}
-	
-	//TODO: add endpoint to get all users who have sent messages
-	
-	//TODO: add enpdoint to get all templates
-	
-	//TODO: add endpoint to create a new template
 }
