@@ -1,9 +1,6 @@
 package com.ivan.kafkaapp.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +15,6 @@ import com.ivan.kafkaapp.dto.LatestMessageResponse;
 import com.ivan.kafkaapp.dto.MessagingRequest;
 import com.ivan.kafkaapp.dto.Response;
 import com.ivan.kafkaapp.dto.UserMessageDataResponse;
-import com.ivan.kafkaapp.exception.TemplateNotFoundException;
-import com.ivan.kafkaapp.exception.UserNotFoundException;
 import com.ivan.kafkaapp.service.KafkaMessagingService;
 
 import lombok.extern.slf4j.Slf4j;
