@@ -3,6 +3,9 @@ package com.ivan.kafkaapp.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -18,23 +21,23 @@ public class Response<T> implements Serializable {
 	 */
 	private static final long serialVersionUID = -964000553650368654L;
 	
-	private ResponseStatus responseStatus;
+	private HttpStatus responseStatus;
 	private String responseMsg;
 	private T responseObj;
 	private List<String> errors;
 	
-	public Response(ResponseStatus responseStatus, String responseMsg, T responseObj) {
+	public Response(HttpStatus responseStatus, String responseMsg, T responseObj) {
 		super();
 		this.responseStatus = responseStatus;
 		this.responseMsg = responseMsg;
 		this.responseObj = responseObj;
 	}
 	
-	public ResponseStatus getResponseStatus() {
+	public HttpStatus getResponseStatus() {
 		return responseStatus;
 	}
 
-	public void setResponseStatus(ResponseStatus responseStatus) {
+	public void setResponseStatus(HttpStatus responseStatus) {
 		this.responseStatus = responseStatus;
 	}
 
@@ -63,22 +66,26 @@ public class Response<T> implements Serializable {
 	}
 
 	public static <T> Response<T> successResponse(T respObject){
-		return new Response<T>(ResponseStatus.SUCCESS, null, respObject);
-	}
-	
-	public static <T> Response<T> failureResponse(String message){
-		return new Response<T>(ResponseStatus.ERROR, message, null);
-	}
+		return new Response<T>(HttpStatus.OK, null, respObject);
+	}	
 	
 	public static <T> Response<T> successResponse(String message){
-		return new Response<T>(ResponseStatus.SUCCESS, message, null);
+		return new Response<T>(HttpStatus.OK, message, null);
 	}
 	
 	public static <T> Response<T> successResponse(T respObject, String message){
-		return new Response<T>(ResponseStatus.SUCCESS, message, respObject);
+		return new Response<T>(HttpStatus.OK, message, respObject);
 	}
 	
 	public static <T> Response<T> failureResponse(T respObject, String message){
-		return new Response<T>(ResponseStatus.ERROR, message, respObject);
+		return new Response<T>(HttpStatus.INTERNAL_SERVER_ERROR, message, respObject);
+	}
+	
+	public static <T> Response<T> failureResponse(String message){
+		return new Response<T>(HttpStatus.INTERNAL_SERVER_ERROR, message, null);
+	}
+	
+	public static <T> Response<T> failureResponse(HttpStatus status, String message){
+		return new Response<T>(status, message, null);
 	}
 }
