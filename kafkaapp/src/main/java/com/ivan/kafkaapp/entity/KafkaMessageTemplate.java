@@ -15,7 +15,7 @@ public class KafkaMessageTemplate {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="kafka_message_template_id")
-	private int templateId;
+	private Integer templateId;
 	
 	@Column(name="message")
 	private String message;
@@ -23,14 +23,38 @@ public class KafkaMessageTemplate {
 	@Column(name="message_name")
 	private String messageName;
 	
+	@Column(name="created_by")
+	private String createdBy;
+	
 	@Column(name="created_date")
 	private LocalDateTime createdDate;
+	
+	@Column(name="last_edited_by")
+	private String lastEditedBy;
+	
+	@Column(name="last_edited_date")
+	private LocalDateTime lastEditedDate;
+	
+	public KafkaMessageTemplate(Integer templateId, String message, String messageName, String createdBy,
+			LocalDateTime createdDate, String lastEditedBy, LocalDateTime lastEditedDate) {
+		super();
+		this.templateId = templateId;
+		this.message = message;
+		this.messageName = messageName;
+		this.createdBy = createdBy;
+		this.createdDate = createdDate;
+		this.lastEditedBy = lastEditedBy;
+		this.lastEditedDate = lastEditedDate;
+	}
 
-	public int getTemplateId() {
+	public KafkaMessageTemplate() {
+	}
+
+	public Integer getTemplateId() {
 		return templateId;
 	}
 
-	public void setTemplateId(int templateId) {
+	public void setTemplateId(Integer templateId) {
 		this.templateId = templateId;
 	}
 
@@ -50,6 +74,14 @@ public class KafkaMessageTemplate {
 		this.messageName = messageName;
 	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
 	}
@@ -57,6 +89,21 @@ public class KafkaMessageTemplate {
 	public void setCreatedDate(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
 	}
-	
+
+	public String getLastEditedBy() {
+		return lastEditedBy;
+	}
+
+	public void setLastEditedBy(String lastEditedBy) {
+		this.lastEditedBy = lastEditedBy;
+	}
+
+	public LocalDateTime getLastEditedDate() {
+		return lastEditedDate;
+	}
+
+	public void setLastEditedDate(LocalDateTime lastEditedDate) {
+		this.lastEditedDate = lastEditedDate;
+	}
 	
 }

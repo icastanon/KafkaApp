@@ -1,5 +1,6 @@
 package com.ivan.kafkaapp.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ivan.kafkaapp.dto.LatestMessageResponse;
 import com.ivan.kafkaapp.dto.MessagingRequest;
@@ -45,6 +47,7 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		this.dataRepo = dataRepo;
 	}
 
+//	@Transactional
 	@Override
 	public void sendMessage(String userId, MessagingRequest request) {
 		//get template from db
@@ -64,9 +67,9 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		kafkaProducer.send(producerRecord);
 		
 		
-		//send userId, timestamp, templateid, placeholders to db
+		//send userId, timestamp, templateid to db
 		KafkaMessageData messageDataEntity = new KafkaMessageData(userId, request.getTemplateId());
-		dataRepo.saveAndFlush(messageDataEntity);
+		dataRepo.save(messageDataEntity);
 	}
 
 	@Override
@@ -118,6 +121,64 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		LatestMessageResponse response = new LatestMessageResponse(latestMessage.getTemplateId(), latestMessage.getCreatedDate(), latestMessage.getUserId());
 		
 		return response;
+	}
+	
+	@Override
+	public List<KafkaMessageTemplate> getAllTemplates() {
+		List<KafkaMessageTemplate> allTemplates = kafkaRepo.findAll();
+		return allTemplates;
+	}
+	
+
+	@Override
+	public KafkaMessageTemplate getTemplate(int templateId) {
+		KafkaMessageTemplate template = kafkaRepo.findByTemplateId(templateId);
+		if(Objects.isNull(template)) {
+			log.error("Template not found on database");
+			throw new TemplateNotFoundException("Template not found for the given Template Id");
+		}
+		
+		return template;
+	}
+	
+//	@Transactional
+	@Override
+	public KafkaMessageTemplate saveTemplate(KafkaMessageTemplate template, String userId) {
+		template.setTemplateId(null);
+		template.setCreatedBy(userId);
+		template.setCreatedDate(LocalDateTime.now());
+		template.setLastEditedBy(null);
+		template.setLastEditedBy(null);
+		return kafkaRepo.save(template);
+	}
+	
+//	@Transactional
+	@Override
+	public KafkaMessageTemplate updateTemplate(KafkaMessageTemplate updateTemplateRequest, String userId) {
+		KafkaMessageTemplate template = kafkaRepo.findByTemplateId(updateTemplateRequest.getTemplateId());
+		if(Objects.isNull(template)) {
+			log.error("Template not found on database");
+			throw new TemplateNotFoundException("Template not found for the given Template Id");
+		}
+		updateTemplateRequest.setLastEditedBy(userId);
+		updateTemplateRequest.setLastEditedDate(LocalDateTime.now());
+		updateTemplateRequest.setCreatedBy(template.getCreatedBy());
+		updateTemplateRequest.setCreatedDate(template.getCreatedDate());
+		
+		return kafkaRepo.save(updateTemplateRequest);
+	}
+	
+	@Transactional
+	@Override
+	public void deleteTemplate(int templateId) {
+		KafkaMessageTemplate template = kafkaRepo.findByTemplateId(templateId);
+		if(Objects.isNull(template)) {
+			log.error("Template not found on database");
+			throw new TemplateNotFoundException("Template not found for the given Template Id");
+		}
+		
+		kafkaRepo.deleteByTemplateId(templateId);
+		
 	}
 
 	@PreDestroy
