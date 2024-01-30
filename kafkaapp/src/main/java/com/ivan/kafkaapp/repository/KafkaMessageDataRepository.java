@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.ivan.kafkaapp.entity.KafkaMessageData;
 
 @Repository
-public interface KafkaMessageDataRepository extends JpaRepository<KafkaMessageData, Long>{
+public interface KafkaMessageDataRepository extends JpaRepository<KafkaMessageData, Integer>{
 	public List<KafkaMessageData> findByTemplateId(Integer templateId);
 	
 	public List<KafkaMessageData> findByUserId(String userId);

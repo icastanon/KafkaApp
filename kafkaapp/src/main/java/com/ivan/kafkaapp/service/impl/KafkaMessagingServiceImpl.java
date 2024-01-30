@@ -3,7 +3,7 @@ package com.ivan.kafkaapp.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -47,15 +47,19 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		this.dataRepo = dataRepo;
 	}
 
-//	@Transactional
 	@Override
 	public void sendMessage(String userId, MessagingRequest request) {
 		//get template from db
-		KafkaMessageTemplate template = kafkaRepo.findByTemplateId(request.getTemplateId());
-		if(Objects.isNull(template)) {
+		Optional<KafkaMessageTemplate> result = kafkaRepo.findById(request.getTemplateId());
+		KafkaMessageTemplate template = null;
+		
+		if(result.isPresent()) {
+			template = result.get();
+		}else {
 			log.error("Template not found on database");
 			throw new TemplateNotFoundException("Template not found for the given Template Id");
 		}
+		
 		String templateMessage = template.getMessage();
 		
 		//replace values from request with template placeholders
@@ -95,6 +99,12 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 
 	@Override
 	public UserMessageDataResponse getMessagesForTemplate(int templateId) {
+		Optional<KafkaMessageTemplate> result = kafkaRepo.findById(templateId);
+		
+		if(!result.isPresent()) {
+			log.error("Template not found on database");
+			throw new TemplateNotFoundException("Template not found for the given Template Id");
+		}
 		//getting messages from db
 		List<KafkaMessageData> messageEntities = dataRepo.findByTemplateId(templateId);
 		List<UserMessageData> messages = new ArrayList<>();
@@ -132,8 +142,12 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 
 	@Override
 	public KafkaMessageTemplate getTemplate(int templateId) {
-		KafkaMessageTemplate template = kafkaRepo.findByTemplateId(templateId);
-		if(Objects.isNull(template)) {
+		Optional<KafkaMessageTemplate> result = kafkaRepo.findById(templateId);
+		KafkaMessageTemplate template = null;
+		
+		if(result.isPresent()) {
+			template = result.get();
+		}else {
 			log.error("Template not found on database");
 			throw new TemplateNotFoundException("Template not found for the given Template Id");
 		}
@@ -141,7 +155,6 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		return template;
 	}
 	
-//	@Transactional
 	@Override
 	public KafkaMessageTemplate saveTemplate(KafkaMessageTemplate template, String userId) {
 		template.setTemplateId(null);
@@ -152,14 +165,18 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		return kafkaRepo.save(template);
 	}
 	
-//	@Transactional
 	@Override
 	public KafkaMessageTemplate updateTemplate(KafkaMessageTemplate updateTemplateRequest, String userId) {
-		KafkaMessageTemplate template = kafkaRepo.findByTemplateId(updateTemplateRequest.getTemplateId());
-		if(Objects.isNull(template)) {
+		Optional<KafkaMessageTemplate> result = kafkaRepo.findById(updateTemplateRequest.getTemplateId());
+		KafkaMessageTemplate template = null;
+		
+		if(result.isPresent()) {
+			template = result.get();
+		}else {
 			log.error("Template not found on database");
 			throw new TemplateNotFoundException("Template not found for the given Template Id");
 		}
+		
 		updateTemplateRequest.setLastEditedBy(userId);
 		updateTemplateRequest.setLastEditedDate(LocalDateTime.now());
 		updateTemplateRequest.setCreatedBy(template.getCreatedBy());
@@ -171,13 +188,13 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 	@Transactional
 	@Override
 	public void deleteTemplate(int templateId) {
-		KafkaMessageTemplate template = kafkaRepo.findByTemplateId(templateId);
-		if(Objects.isNull(template)) {
+		Optional<KafkaMessageTemplate> result = kafkaRepo.findById(templateId);
+		if(!result.isPresent()) {
 			log.error("Template not found on database");
 			throw new TemplateNotFoundException("Template not found for the given Template Id");
 		}
 		
-		kafkaRepo.deleteByTemplateId(templateId);
+		kafkaRepo.deleteById(templateId);
 		
 	}
 
