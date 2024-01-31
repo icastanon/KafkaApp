@@ -20,6 +20,7 @@ import com.ivan.kafkaapp.dto.UserMessageDataResponse;
 import com.ivan.kafkaapp.entity.KafkaMessageTemplate;
 import com.ivan.kafkaapp.service.KafkaMessagingService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -33,6 +34,10 @@ public class TemplatesController {
 		kafkaService = kafkaMessagingService;
 	}
 	
+	@Operation(
+			summary = "POST endpoint to create a new template",
+			description = "This endpoint stores a new template into the kafka_message_template table."
+			)
 	@PostMapping
 	public Response<KafkaMessageTemplate> saveTemplate(@RequestHeader("userId") String userId, 
 		@RequestBody KafkaMessageTemplate newTemplateRequest) throws JsonProcessingException{
@@ -41,6 +46,10 @@ public class TemplatesController {
 		return Response.successResponse(savedTemplate, "Succesfully saved template to db");
 	}
 	
+	@Operation(
+			summary = "GET endpoint to get all templates",
+			description = "This endpoint returns a list of all templates in the kafka_message_template db table."
+			)
 	@GetMapping
 	public Response<List<KafkaMessageTemplate>> getAllTemplates(){
 		log.info("Service call /kafkaapi/templates");
@@ -48,6 +57,10 @@ public class TemplatesController {
 		return Response.successResponse(resp);
 	}
 	
+	@Operation(
+			summary = "GET endpoint to get a template",
+			description = "This endpoint gets by id the specified template from the kafka_message_template db table."
+			)
 	@GetMapping(value = "/{templateId}")
 	public Response<KafkaMessageTemplate> getTemplate(@PathVariable int templateId){
 		log.info("Service call /kafkaapi/templates/{}", templateId);
@@ -56,6 +69,10 @@ public class TemplatesController {
 		
 	}
 	
+	@Operation(
+			summary = "PUT endpoint to update a template",
+			description = "This endpoint updates the template with the id that is received in the request."
+			)
 	@PutMapping
 	public Response<KafkaMessageTemplate> updateTemplate(@RequestHeader("userId") String userId, 
 		@RequestBody KafkaMessageTemplate updateTemplateRequest) throws JsonProcessingException{
@@ -64,6 +81,10 @@ public class TemplatesController {
 		return Response.successResponse(updatedTemplate, "Succesfully saved template to db");
 	}
 	
+	@Operation(
+			summary = "DELETE endpoint to delete a template",
+			description = "This endpoint deletes the template with the id that is received in the request."
+			)
 	@DeleteMapping(value = "/{templateId}")
 	public Response<KafkaMessageTemplate> deleteTemplate(@PathVariable int templateId){
 		log.info("Service call /kafkaapi/templates/{}", templateId);
@@ -72,6 +93,10 @@ public class TemplatesController {
 		
 	}
 	
+	@Operation(
+			summary = "GET endpoint to get all messages for a template",
+			description = "This endpoint gets all messages that have been sent using the template with the template id that is received in the request."
+			)
 	@GetMapping(value = "/{templateId}/messages")
 	public Response<UserMessageDataResponse> getMessagesForTemplate(@PathVariable int templateId){
 		log.info("Service call /kafkaapi/templates/{}/messages", templateId);

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ivan.kafkaapp.dto.LatestMessageResponse;
 import com.ivan.kafkaapp.dto.MessagingRequest;
@@ -185,7 +184,6 @@ public class KafkaMessagingServiceImpl implements KafkaMessagingService {
 		return kafkaRepo.save(updateTemplateRequest);
 	}
 	
-	@Transactional
 	@Override
 	public void deleteTemplate(int templateId) {
 		Optional<KafkaMessageTemplate> result = kafkaRepo.findById(templateId);

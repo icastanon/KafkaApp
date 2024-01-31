@@ -15,6 +15,7 @@ import com.ivan.kafkaapp.dto.MessagingRequest;
 import com.ivan.kafkaapp.dto.Response;
 import com.ivan.kafkaapp.service.KafkaMessagingService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -28,6 +29,10 @@ public class MessagesController {
 		kafkaService = kafkaMessagingService;
 	}
 	
+	@Operation(
+			summary = "POST endpoint to send a message",
+			description = "This endpoint uses the specified template to send a message to the kafka topic. It also stores metadata in the kafka_message_data db table."
+			)
 	@PostMapping
 	public Response<?> sendMessage(@RequestHeader("userId") String userId, 
 		@RequestBody MessagingRequest kafkaRequest) throws JsonProcessingException{
@@ -36,6 +41,10 @@ public class MessagesController {
 		return Response.successResponse("Succesfully sent message to kafka topic");
 	}
 	
+	@Operation(
+			summary = "GET endpoint to get the latest message",
+			description = "This endpoint returns the last sent message. It gets the row with the largest created date from kafka_message_data db table."
+			)
 	@GetMapping(value = "/latestmessage")
 	public Response<LatestMessageResponse> getLatestMessage(){
 		log.info("Service call /kafka/latestmessage");
